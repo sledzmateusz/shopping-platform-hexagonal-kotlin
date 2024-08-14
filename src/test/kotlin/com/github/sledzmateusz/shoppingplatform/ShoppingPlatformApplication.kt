@@ -1,9 +1,9 @@
 package com.github.sledzmateusz.shoppingplatform
 
+import com.github.sledzmateusz.shoppingplatform.testutils.IntegrationTest
 import org.junit.jupiter.api.Test
-import org.springframework.boot.test.context.SpringBootTest
 
-@SpringBootTest
+@IntegrationTest
 class ShoppingPlatformApplication {
 
   @Test
