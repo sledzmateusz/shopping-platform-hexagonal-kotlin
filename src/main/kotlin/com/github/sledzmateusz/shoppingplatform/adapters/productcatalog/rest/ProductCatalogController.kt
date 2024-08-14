@@ -10,12 +10,14 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("products")
+@RequestMapping("products/{id}")
 class ProductController(private val facade: ProductCatalogFacade) {
 
-  private val log = logger();
+  companion object {
+    private val log = logger()
+  }
 
-  @GetMapping("{id}")
+  @GetMapping
   fun getProduct(@PathVariable("id") productId: ProductId): ProductResponse {
     log.info("GET product info $productId")
     return facade.getProductBy(productId).toResponse()
