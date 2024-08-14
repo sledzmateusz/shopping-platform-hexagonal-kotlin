@@ -1,6 +1,7 @@
-package com.github.sledzmateusz.shoppingplatform.adapters.rest
+package com.github.sledzmateusz.shoppingplatform.adapters.productcatalog.rest
 
 import com.github.sledzmateusz.shoppingplatform.Application
+import com.github.sledzmateusz.shoppingplatform.adapters.productcatalog.rest.ProductResponse
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

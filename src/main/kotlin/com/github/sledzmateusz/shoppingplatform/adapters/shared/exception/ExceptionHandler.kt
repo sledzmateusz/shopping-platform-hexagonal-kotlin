@@ -1,6 +1,6 @@
-package com.github.sledzmateusz.shoppingplatform.adapters
+package com.github.sledzmateusz.shoppingplatform.adapters.shared.exception
 
-import com.github.sledzmateusz.shoppingplatform.adapters.rest.ProductNotFoundException
+import com.github.sledzmateusz.shoppingplatform.adapters.productcatalog.rest.ProductNotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
