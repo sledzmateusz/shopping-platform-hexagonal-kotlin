@@ -17,7 +17,19 @@ internal class ProductPriceCalculatorControllerTest @Autowired constructor(
 ) {
 
   @Test
-  fun `should return discounted product for any productId`() {
+  fun `should return discounted product if quantity meets or exceeds discount threshold`() {
+    val expectedProductId = "aac7d817-93f0-4f6f-92c4-6752c95d23b0"
+
+    val response = testRestTemplate.postForEntity("/products/$expectedProductId/calculate-price", CalculateProductPriceRequest(2), ProductPriceResponse::class.java)
+
+    assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
+    assertThat(response.body).isNotNull()
+    assertThat(response.body?.regularTotalPrice).isEqualTo(Money(BigDecimal.valueOf(1199.98)))
+    assertThat(response.body?.discountedTotalPrice).isEqualTo(Money(BigDecimal.valueOf(1189.98)))
+  }
+
+  @Test
+  fun `should return null discountedTotalPrice when quantity is below discount threshold`() {
     val expectedProductId = "aac7d817-93f0-4f6f-92c4-6752c95d23b0"
 
     val response = testRestTemplate.postForEntity("/products/$expectedProductId/calculate-price", CalculateProductPriceRequest(1), ProductPriceResponse::class.java)
@@ -25,7 +37,7 @@ internal class ProductPriceCalculatorControllerTest @Autowired constructor(
     assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
     assertThat(response.body).isNotNull()
     assertThat(response.body?.regularTotalPrice).isEqualTo(Money(BigDecimal.valueOf(599.99)))
-    assertThat(response.body?.discountedTotalPrice).isEqualTo(Money(BigDecimal.valueOf(589.99)))
+    assertThat(response.body?.discountedTotalPrice).isNull()
   }
 
   @Test

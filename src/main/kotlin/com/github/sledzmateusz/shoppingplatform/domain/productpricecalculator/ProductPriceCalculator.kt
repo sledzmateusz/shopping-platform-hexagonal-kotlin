@@ -3,19 +3,21 @@ package com.github.sledzmateusz.shoppingplatform.domain.productpricecalculator
 import com.github.sledzmateusz.shoppingplatform.domain.ProductPriceDto
 import com.github.sledzmateusz.shoppingplatform.domain.productpricecalculator.Product.DiscountedProduct
 import com.github.sledzmateusz.shoppingplatform.domain.shared.ProductId
-import com.github.sledzmateusz.shoppingplatform.domain.productpricecalculator.Discount.AmountBasedDiscount.Companion as AmountBasedDiscount
 import com.github.sledzmateusz.shoppingplatform.domain.productpricecalculator.Product.RegularProduct.Companion as RegularProduct
 
 class ProductPriceCalculator(
   private val productClient: ProductCatalogClient,
-  private val discountService: DiscountService
+  private val discountService: DiscountService,
+  private val discountEligibilityChecker: DiscountEligibilityChecker,
 ) {
-
-  private val discount: Discount = AmountBasedDiscount.of(10.0)
 
   fun calculatePrice(productId: ProductId, quantity: ProductQuantity): ProductPriceDto {
     val regularProduct = productClient.getProduct(productId).toRegularProduct(quantity)
-    val discountedProduct = discountService.applyDiscount(regularProduct, discount)
+    val eligibleDiscounts = discountEligibilityChecker.getEligibleDiscounts(regularProduct)
+    val discountedProduct = eligibleDiscounts
+      .map { discountService.applyDiscount(regularProduct, it) }
+      .firstOrNull() ?: regularProduct //take regular product if there is no applicable discount
+
     return discountedProduct.toDto()
   }
 }

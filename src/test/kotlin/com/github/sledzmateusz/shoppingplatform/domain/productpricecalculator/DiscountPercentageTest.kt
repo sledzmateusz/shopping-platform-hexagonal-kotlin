@@ -18,10 +18,10 @@ class DiscountPercentageTest {
   }
 
   @Test
-  fun `should throw IllegalArgumentException for negative percentage`() {
+  fun `should throw InvalidDiscountPercentage for negative percentage`() {
     val negativePercentage = -5.0
 
-    val exception = assertThrows<IllegalArgumentException> {
+    val exception = assertThrows<InvalidDiscountPercentage> {
       DiscountPercentage.of(negativePercentage)
     }
 
@@ -32,7 +32,7 @@ class DiscountPercentageTest {
   fun `should throw IllegalArgumentException for percentage greater than 100`() {
     val tooHighPercentage = 100.1
 
-    val exception = assertThrows<IllegalArgumentException> {
+    val exception = assertThrows<InvalidDiscountPercentage> {
       DiscountPercentage.of(tooHighPercentage)
     }
 

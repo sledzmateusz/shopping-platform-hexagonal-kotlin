@@ -18,7 +18,7 @@ class DiscountServiceTest {
 
   @Test
   fun `should return ZERO price if AmountBasedDiscount exceeds total price`() {
-    val givenDiscount = Discount.AmountBasedDiscount(Money(BigDecimal(1000.0)))
+    val givenDiscount = Discount.AmountBasedDiscount(Money(BigDecimal(1000.0)), DiscountThreshold.of(1))
 
     val result = discountService.applyDiscount(givenProduct, givenDiscount)
 
@@ -37,7 +37,7 @@ class DiscountServiceTest {
 
   @Test
   fun `should return DiscountedProduct for AmountBasedDiscount`() {
-    val givenDiscount = Discount.AmountBasedDiscount(Money(BigDecimal(10.0)))
+    val givenDiscount = Discount.AmountBasedDiscount(Money(BigDecimal(10.0)), DiscountThreshold.of(1))
 
     val result = discountService.applyDiscount(givenProduct, givenDiscount)
 

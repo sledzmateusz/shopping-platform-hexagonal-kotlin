@@ -1,0 +1,10 @@
+spring.application.name: shopping-platform-hexagonal-kotlin
+
+discounts:
+  amount-based:
+    - amount: 50
+      threshold: 10
+    - amount: 30
+      threshold: 5
+    - amount: 10
+      threshold: 2
