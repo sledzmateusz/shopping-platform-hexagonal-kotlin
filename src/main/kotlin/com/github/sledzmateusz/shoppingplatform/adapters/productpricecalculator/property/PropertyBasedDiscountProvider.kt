@@ -1,6 +1,5 @@
 package com.github.sledzmateusz.shoppingplatform.adapters.productpricecalculator.property
 
-import com.github.sledzmateusz.shoppingplatform.domain.productpricecalculator.Discount
 import com.github.sledzmateusz.shoppingplatform.domain.productpricecalculator.Discount.AmountBasedDiscount
 import com.github.sledzmateusz.shoppingplatform.domain.productpricecalculator.Discount.PercentageBasedDiscount
 import com.github.sledzmateusz.shoppingplatform.domain.productpricecalculator.DiscountPercentage

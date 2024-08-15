@@ -13,7 +13,7 @@ import java.math.BigDecimal
 
 @IntegrationTest
 internal class ProductPriceCalculatorControllerTest @Autowired constructor(
-  private val testRestTemplate: TestRestTemplate,
+  private val productPriceCalculatorRestClient: ProductPriceCalculatorRestClient,
 ) {
 
   // Sony Alpha 7C - 7699.99 PLN
@@ -24,7 +24,7 @@ internal class ProductPriceCalculatorControllerTest @Autowired constructor(
 
   @Test
   fun `should return discounted product if quantity meets or exceeds discount threshold`() {
-    val response = testRestTemplate.postForEntity("/products/$productIdWithoutPercentageDiscount/calculate-price", CalculateProductPriceRequest(2), ProductPriceResponse::class.java)
+    val response = productPriceCalculatorRestClient.calculateProductPrice(productIdWithoutPercentageDiscount,2)
 
     assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
     assertThat(response.body).isNotNull()
@@ -34,7 +34,7 @@ internal class ProductPriceCalculatorControllerTest @Autowired constructor(
 
   @Test
   fun `should return null discountedTotalPrice when quantity is below discount threshold and percentage discount is not applicable`() {
-    val response = testRestTemplate.postForEntity("/products/$productIdWithoutPercentageDiscount/calculate-price", CalculateProductPriceRequest(1), ProductPriceResponse::class.java)
+    val response = productPriceCalculatorRestClient.calculateProductPrice(productIdWithoutPercentageDiscount,1)
 
     assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
     assertThat(response.body).isNotNull()
@@ -43,16 +43,8 @@ internal class ProductPriceCalculatorControllerTest @Autowired constructor(
   }
 
   @Test
-  fun `should return 400 for invalid product quantity`() {
-    val response = testRestTemplate.postForEntity("/products/$productIdWith10PercentageDiscount/calculate-price", CalculateProductPriceRequest(0), String::class.java)
-
-    assertThat(response.statusCode).isEqualTo(HttpStatus.BAD_REQUEST)
-    assertThat(response.body).isEqualTo("Quantity must be between 1 and 100")
-  }
-
-  @Test
   fun `should return discounted product if percentage discount is applicable and quantity is below discount threshold`() {
-    val response = testRestTemplate.postForEntity("/products/$productIdWith10PercentageDiscount/calculate-price", CalculateProductPriceRequest(1), ProductPriceResponse::class.java)
+    val response = productPriceCalculatorRestClient.calculateProductPrice(productIdWith10PercentageDiscount,1)
 
     assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
     assertThat(response.body).isNotNull()
@@ -62,7 +54,7 @@ internal class ProductPriceCalculatorControllerTest @Autowired constructor(
 
   @Test
   fun `should return discounted product with the lowest total price if multiple discounts are applicable`() {
-    val response = testRestTemplate.postForEntity("/products/$productIdWith10PercentageDiscount/calculate-price", CalculateProductPriceRequest(2), ProductPriceResponse::class.java)
+    val response = productPriceCalculatorRestClient.calculateProductPrice(productIdWith10PercentageDiscount,2)
 
     assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
     assertThat(response.body).isNotNull()
@@ -71,6 +63,35 @@ internal class ProductPriceCalculatorControllerTest @Autowired constructor(
     // percentage based discount - 1199.98 * 0.9 = 1079.98
     // amount based discount - 1199.98 - 10 = 1189.98
     assertThat(response.body?.discountedTotalPrice).isEqualTo(Money.from(BigDecimal.valueOf(1079.98)))
+  }
+
+  @Test
+  fun `should return 404 when product does not exist`() {
+    val nonExistingProductId = randomProductId()
+
+    val response = productPriceCalculatorRestClient.calculateProductPriceError(nonExistingProductId, 1)
+
+    assertThat(response.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
+    assertThat(response.body).isEqualTo("Product ProductId(raw=$nonExistingProductId) not found")
+  }
+
+  @Test
+  fun `should return 400 for invalid product id`() {
+    val invalidProductId = invalidProductId()
+
+    val response = productPriceCalculatorRestClient.calculateProductPriceError(invalidProductId, 1)
+
+    assertThat(response.statusCode).isEqualTo(HttpStatus.BAD_REQUEST)
+    assertThat(response.body).isEqualTo("Invalid Product ID: $invalidProductId")
+  }
+
+  @Test
+  fun `should return 400 for invalid product quantity`() {
+    val response = productPriceCalculatorRestClient.calculateProductPriceError(productIdWith10PercentageDiscount,0)
+
+
+    assertThat(response.statusCode).isEqualTo(HttpStatus.BAD_REQUEST)
+    assertThat(response.body).isEqualTo("Quantity must be between 1 and 100")
   }
 }
 
