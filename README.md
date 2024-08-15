@@ -44,8 +44,15 @@ docker build -t shopping-platform .
 ### Step 2: Run the Docker Container
 
 ```bash
-docker run -p 8080:8080 shopping-platform
+docker run -p 8080:8080 --name shopping-platform-container shopping-platform
 ```
+
+### Stop and remove the Docker Container
+
+```bash
+docker stop shopping-platform-container
+docker rm shopping-platform-container
+``````
 
 ### Predefined Products
 
