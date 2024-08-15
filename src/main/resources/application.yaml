@@ -8,3 +8,10 @@ discounts:
       threshold: 5
     - amount: 10
       threshold: 2
+  percentage-based:
+    - productIds: ["aac7d817-93f0-4f6f-92c4-6752c95d23b0", "aac7d817-93f0-4f6f-92c4-6752c95d23b1"]
+      percentage: 10
+    - productIds: ["aac7d817-93f0-4f6f-92c4-6752c95d23b2"]
+      percentage: 50
+    - productIds: ["aac7d817-93f0-4f6f-92c4-6752c95d23b3"]
+      percentage: 100

@@ -6,13 +6,12 @@ import com.github.sledzmateusz.shoppingplatform.domain.shared.Money
 import com.github.sledzmateusz.shoppingplatform.domain.shared.ProductId
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import java.math.BigDecimal
 
 class DiscountEligibilityCheckerTest {
 
-  private val discountForTenItems = AmountBasedDiscount(Money(BigDecimal(50)), threshold = DiscountThreshold.of(10))
-  private val discountForFiveItems = AmountBasedDiscount(Money(BigDecimal(30)), threshold = DiscountThreshold.of(5))
-  private val discountForTwoItem = AmountBasedDiscount(Money(BigDecimal(10)), threshold = DiscountThreshold.of(2))
+  private val discountForTenItems = AmountBasedDiscount(Money.from(50.toBigDecimal()), threshold = DiscountThreshold.of(10))
+  private val discountForFiveItems = AmountBasedDiscount(Money.from(30.toBigDecimal()), threshold = DiscountThreshold.of(5))
+  private val discountForTwoItem = AmountBasedDiscount(Money.from(10.toBigDecimal()), threshold = DiscountThreshold.of(2))
 
   private val discountsProvider = object : DiscountsProvider {
     override fun getAmountBasedDiscounts(): List<AmountBasedDiscount> {
@@ -22,6 +21,10 @@ class DiscountEligibilityCheckerTest {
         discountForTwoItem
       )
     }
+
+    override fun getPercentageBasedDiscounts(): List<Discount.PercentageBasedDiscount> {
+      return emptyList()
+    }
   }
 
   private val discountEligibilityChecker = DiscountEligibilityChecker(discountsProvider)
@@ -30,7 +33,7 @@ class DiscountEligibilityCheckerTest {
   fun `should return highest eligible discount for product with quantity greater than highest threshold`() {
     val product = RegularProduct(
       id = ProductId.new(),
-      baseUnitPrice = Money(BigDecimal(100)),
+      baseUnitPrice = Money.from(100.toBigDecimal()),
       quantity = ProductQuantity.of(15)
     )
 
@@ -44,7 +47,7 @@ class DiscountEligibilityCheckerTest {
   fun `should return discount with threshold exactly matching product quantity`() {
     val product = RegularProduct(
       id = ProductId.new(),
-      baseUnitPrice = Money(BigDecimal(100)),
+      baseUnitPrice = Money.from(100.toBigDecimal()),
       quantity = ProductQuantity.of(10)
     )
 
@@ -58,7 +61,7 @@ class DiscountEligibilityCheckerTest {
   fun `should return lowest eligible discount for product with quantity matching lowest threshold`() {
     val product = RegularProduct(
       id = ProductId.new(),
-      baseUnitPrice = Money(BigDecimal(100)),
+      baseUnitPrice = Money.from(100.toBigDecimal()),
       quantity = ProductQuantity.of(3)
     )
 
@@ -72,7 +75,7 @@ class DiscountEligibilityCheckerTest {
   fun `should return no discounts if product quantity is below any threshold`() {
     val product = RegularProduct(
       id = ProductId.new(),
-      baseUnitPrice = Money(BigDecimal(100)),
+      baseUnitPrice = Money.from(100.toBigDecimal()),
       quantity = ProductQuantity.of(1)
     )
 

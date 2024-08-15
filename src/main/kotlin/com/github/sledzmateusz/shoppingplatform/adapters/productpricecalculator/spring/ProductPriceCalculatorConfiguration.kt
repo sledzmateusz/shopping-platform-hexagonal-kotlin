@@ -1,7 +1,7 @@
 package com.github.sledzmateusz.shoppingplatform.adapters.productpricecalculator.spring
 
-import com.github.sledzmateusz.shoppingplatform.adapters.productpricecalculator.property.PropertyBasedDiscountProvider
 import com.github.sledzmateusz.shoppingplatform.domain.ProductPriceCalculatorFacade
+import com.github.sledzmateusz.shoppingplatform.domain.productpricecalculator.BestDiscountSelector
 import com.github.sledzmateusz.shoppingplatform.domain.productpricecalculator.DiscountEligibilityChecker
 import com.github.sledzmateusz.shoppingplatform.domain.productpricecalculator.DiscountService
 import com.github.sledzmateusz.shoppingplatform.domain.productpricecalculator.DiscountsProvider
@@ -24,12 +24,18 @@ class ProductPriceCalculatorConfiguration {
   }
 
   @Bean
+  fun bestDiscountSelector(discountService: DiscountService): BestDiscountSelector {
+    return BestDiscountSelector(discountService)
+  }
+
+  @Bean
   fun productPriceCalculator(
     productCatalogClient: ProductCatalogClient,
     discountService: DiscountService,
+    bestDiscountSelector: BestDiscountSelector,
     discountEligibilityChecker: DiscountEligibilityChecker,
   ): ProductPriceCalculator {
-    return ProductPriceCalculator(productCatalogClient, discountService, discountEligibilityChecker)
+    return ProductPriceCalculator(productCatalogClient, bestDiscountSelector, discountEligibilityChecker)
   }
 
   @Bean

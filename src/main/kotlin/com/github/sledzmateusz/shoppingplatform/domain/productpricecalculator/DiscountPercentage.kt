@@ -1,13 +1,13 @@
 package com.github.sledzmateusz.shoppingplatform.domain.productpricecalculator
 
-data class DiscountPercentage private constructor(val value: Double) {
+data class DiscountPercentage private constructor(val value: Int) {
 
   init {
-    require(value in 0.0..100.0) { throw InvalidDiscountPercentage() }
+    require(value in 0..100) { throw InvalidDiscountPercentage() }
   }
 
   companion object {
-    fun of(value: Double): DiscountPercentage {
+    fun of(value: Int): DiscountPercentage {
       return DiscountPercentage(value)
     }
   }

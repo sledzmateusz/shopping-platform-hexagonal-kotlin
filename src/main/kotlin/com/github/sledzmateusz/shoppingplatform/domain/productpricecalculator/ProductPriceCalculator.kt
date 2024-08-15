@@ -7,16 +7,14 @@ import com.github.sledzmateusz.shoppingplatform.domain.productpricecalculator.Pr
 
 class ProductPriceCalculator(
   private val productClient: ProductCatalogClient,
-  private val discountService: DiscountService,
+  private val bestDiscountSelector: BestDiscountSelector,
   private val discountEligibilityChecker: DiscountEligibilityChecker,
 ) {
 
   fun calculatePrice(productId: ProductId, quantity: ProductQuantity): ProductPriceDto {
     val regularProduct = productClient.getProduct(productId).toRegularProduct(quantity)
     val eligibleDiscounts = discountEligibilityChecker.getEligibleDiscounts(regularProduct)
-    val discountedProduct = eligibleDiscounts
-      .map { discountService.applyDiscount(regularProduct, it) }
-      .firstOrNull() ?: regularProduct //take regular product if there is no applicable discount
+    val discountedProduct = bestDiscountSelector.getByLowestTotalPrice(regularProduct, eligibleDiscounts)
 
     return discountedProduct.toDto()
   }

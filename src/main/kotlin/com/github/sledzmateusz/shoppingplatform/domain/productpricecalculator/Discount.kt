@@ -1,6 +1,7 @@
 package com.github.sledzmateusz.shoppingplatform.domain.productpricecalculator
 
 import com.github.sledzmateusz.shoppingplatform.domain.shared.Money
+import com.github.sledzmateusz.shoppingplatform.domain.shared.ProductId
 
 sealed class Discount {
 
@@ -16,7 +17,8 @@ sealed class Discount {
   }
 
   data class PercentageBasedDiscount(
-    val discountPercentage: DiscountPercentage
+    val discountPercentage: DiscountPercentage,
+    val productIds: Set<ProductId>,
   ) : Discount()
 }
 

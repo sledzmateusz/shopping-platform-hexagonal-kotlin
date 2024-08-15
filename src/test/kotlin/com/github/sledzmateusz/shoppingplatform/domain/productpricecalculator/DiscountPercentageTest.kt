@@ -9,7 +9,7 @@ class DiscountPercentageTest {
 
   @Test
   fun `should create DiscountPercentage with valid value`() {
-    val validPercentage = 25.0
+    val validPercentage = 25
 
     val discountPercentage = DiscountPercentage.of(validPercentage)
 
@@ -19,7 +19,7 @@ class DiscountPercentageTest {
 
   @Test
   fun `should throw InvalidDiscountPercentage for negative percentage`() {
-    val negativePercentage = -5.0
+    val negativePercentage = -5
 
     val exception = assertThrows<InvalidDiscountPercentage> {
       DiscountPercentage.of(negativePercentage)
@@ -30,7 +30,7 @@ class DiscountPercentageTest {
 
   @Test
   fun `should throw IllegalArgumentException for percentage greater than 100`() {
-    val tooHighPercentage = 100.1
+    val tooHighPercentage = 101
 
     val exception = assertThrows<InvalidDiscountPercentage> {
       DiscountPercentage.of(tooHighPercentage)
@@ -41,13 +41,13 @@ class DiscountPercentageTest {
 
   @Test
   fun `should create DiscountPercentage for edge values 0 and 100`() {
-    val zeroPercentage = DiscountPercentage.of(0.0)
-    val hundredPercentage = DiscountPercentage.of(100.0)
+    val zeroPercentage = DiscountPercentage.of(0)
+    val hundredPercentage = DiscountPercentage.of(100)
 
     assertNotNull(zeroPercentage)
-    assertEquals(0.0, zeroPercentage.value)
+    assertEquals(0, zeroPercentage.value)
 
     assertNotNull(hundredPercentage)
-    assertEquals(100.0, hundredPercentage.value)
+    assertEquals(100, hundredPercentage.value)
   }
 }

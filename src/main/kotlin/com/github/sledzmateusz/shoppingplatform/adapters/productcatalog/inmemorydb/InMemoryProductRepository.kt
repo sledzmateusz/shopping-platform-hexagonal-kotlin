@@ -46,5 +46,5 @@ class InMemoryProductRepository : ProductRepository {
 }
 
 private fun productEntryFrom(id: ProductId = ProductId.new(), name: String, price: Double): Pair<ProductId, Product> {
-  return id to Product(id, name, Money(BigDecimal.valueOf(price)))
+  return id to Product(id, name, Money.from(BigDecimal.valueOf(price)))
 }

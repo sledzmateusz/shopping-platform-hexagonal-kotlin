@@ -1,47 +1,84 @@
 package com.github.sledzmateusz.shoppingplatform.domain.productpricecalculator
 
+import com.github.sledzmateusz.shoppingplatform.domain.productpricecalculator.Discount.AmountBasedDiscount
+import com.github.sledzmateusz.shoppingplatform.domain.productpricecalculator.Discount.PercentageBasedDiscount
+import com.github.sledzmateusz.shoppingplatform.domain.productpricecalculator.Product.RegularProduct
 import com.github.sledzmateusz.shoppingplatform.domain.shared.Money
 import com.github.sledzmateusz.shoppingplatform.domain.shared.ProductId
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import java.math.BigDecimal
 
 class DiscountServiceTest {
 
   private val discountService = DiscountService()
-  private val givenProduct = Product.RegularProduct(
+  private val product = RegularProduct(
     id = ProductId.new(),
-    baseUnitPrice = Money(BigDecimal(10.0)),
+    baseUnitPrice = Money.from(10.toBigDecimal()),
     quantity = ProductQuantity.of(10)
   )
 
   @Test
   fun `should return ZERO price if AmountBasedDiscount exceeds total price`() {
-    val givenDiscount = Discount.AmountBasedDiscount(Money(BigDecimal(1000.0)), DiscountThreshold.of(1))
+    val discount = AmountBasedDiscount(Money.from(1000.toBigDecimal()), DiscountThreshold.of(1))
 
-    val result = discountService.applyDiscount(givenProduct, givenDiscount)
+    val result = discountService.applyDiscount(product, discount)
 
     assertEquals(Money.zero(), result.discountedTotalPrice)
-    assertEquals(Money(BigDecimal(100.0)), result.baseTotalPrice)
-  }
-
-  @Test
-  fun `should throw exception for PercentageBasedDiscount`() {
-    val givenDiscount = Discount.PercentageBasedDiscount(DiscountPercentage.of(10.0))
-
-    val exception = assertThrows<NotImplementedError> { discountService.applyDiscount(givenProduct, givenDiscount) }
-
-    assertEquals("An operation is not implemented.", exception.message)
+    assertEquals(Money.from(100.toBigDecimal()), result.baseTotalPrice)
   }
 
   @Test
   fun `should return DiscountedProduct for AmountBasedDiscount`() {
-    val givenDiscount = Discount.AmountBasedDiscount(Money(BigDecimal(10.0)), DiscountThreshold.of(1))
+    val discount = AmountBasedDiscount(Money.from(10.toBigDecimal()), DiscountThreshold.of(1))
 
-    val result = discountService.applyDiscount(givenProduct, givenDiscount)
+    val result = discountService.applyDiscount(product, discount)
 
-    assertEquals(Money(BigDecimal(90.0)), result.discountedTotalPrice)
-    assertEquals(Money(BigDecimal(100.0)), result.baseTotalPrice)
+    assertEquals(Money.from(90.toBigDecimal()), result.discountedTotalPrice)
+    assertEquals(Money.from(100.toBigDecimal()), result.baseTotalPrice)
+  }
+
+  @Test
+  fun `should return ZERO price if PercentageBasedDiscount is 100 percent`() {
+    val discount = PercentageBasedDiscount(
+      productIds = setOf(product.id),
+      discountPercentage = DiscountPercentage.of(100)
+    )
+
+    val discountedProduct = discountService.applyDiscount(product, discount)
+
+    assertEquals(Money.zero(), discountedProduct.discountedTotalPrice)
+    assertEquals(Money.from(BigDecimal(100.0)), discountedProduct.baseTotalPrice)
+  }
+
+  @Test
+  fun `should return original price if PercentageBasedDiscount is 0 percent`() {
+    val discount = PercentageBasedDiscount(
+      productIds = setOf(product.id),
+      discountPercentage = DiscountPercentage.of(0)
+    )
+
+    val discountedProduct = discountService.applyDiscount(product, discount)
+
+    assertEquals(Money.from(100.toBigDecimal()), discountedProduct.discountedTotalPrice)
+    assertEquals(Money.from(100.toBigDecimal()), discountedProduct.baseTotalPrice)
+  }
+
+  @Test
+  fun `should apply PercentageBasedDiscount to total base price`() {
+    val testProduct = RegularProduct(
+      id = ProductId.new(),
+      baseUnitPrice = Money.from(BigDecimal(33.33)),
+      quantity = ProductQuantity.of(3)
+    )
+    val discount = PercentageBasedDiscount(
+      productIds = setOf(testProduct.id),
+      discountPercentage = DiscountPercentage.of(10)
+    )
+
+    val discountedProduct = discountService.applyDiscount(testProduct, discount)
+
+    assertEquals(Money.from(BigDecimal(89.99)), discountedProduct.discountedTotalPrice)
+    assertEquals(Money.from(BigDecimal(99.99)), discountedProduct.baseTotalPrice)
   }
 }
