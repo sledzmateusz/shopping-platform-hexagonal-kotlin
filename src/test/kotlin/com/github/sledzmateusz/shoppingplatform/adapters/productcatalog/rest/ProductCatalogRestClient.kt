@@ -1,5 +1,6 @@
 package com.github.sledzmateusz.shoppingplatform.adapters.productcatalog.rest
 
+import com.github.sledzmateusz.shoppingplatform.domain.shared.Money
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.ResponseEntity
 
@@ -18,4 +19,4 @@ class ProductCatalogRestClient(
 }
 
 typealias TestProductId = String
-data class TestProductResponse(val id: String, val name: String)
+data class TestProductResponse(val id: String, val name: String, val price: Money)

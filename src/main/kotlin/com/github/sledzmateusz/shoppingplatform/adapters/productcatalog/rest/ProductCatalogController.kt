@@ -3,6 +3,7 @@ package com.github.sledzmateusz.shoppingplatform.adapters.productcatalog.rest
 import com.github.sledzmateusz.shoppingplatform.adapters.shared.logging.logger
 import com.github.sledzmateusz.shoppingplatform.domain.ProductCatalogFacade
 import com.github.sledzmateusz.shoppingplatform.domain.ProductDto
+import com.github.sledzmateusz.shoppingplatform.domain.shared.Money
 import com.github.sledzmateusz.shoppingplatform.domain.shared.ProductId
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -24,8 +25,8 @@ class ProductController(private val facade: ProductCatalogFacade) {
   }
 }
 
-data class ProductResponse(val id: String, val name: String)
+data class ProductResponse(val id: String, val name: String, val price: Money)
 
-private fun ProductDto.toResponse() = ProductResponse(id = this.id.raw, name = this.name)
+private fun ProductDto.toResponse() = ProductResponse(id = this.id.raw, name = this.name, price = this.basePrice)
 
 class ProductNotFoundException(productId: ProductId) : RuntimeException("Product $productId not found")
