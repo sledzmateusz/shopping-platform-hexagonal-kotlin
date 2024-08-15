@@ -1,6 +1,7 @@
 package com.github.sledzmateusz.shoppingplatform.adapters.shared.exception
 
 import com.github.sledzmateusz.shoppingplatform.adapters.productcatalog.rest.ProductNotFoundException
+import com.github.sledzmateusz.shoppingplatform.domain.productpricecalculator.InvalidProductQuantityException
 import com.github.sledzmateusz.shoppingplatform.domain.shared.InvalidProductIdException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -16,5 +17,9 @@ class ExceptionHandler {
 
   @ExceptionHandler(InvalidProductIdException::class)
   fun handleInvalidProductId(ex: InvalidProductIdException): ResponseEntity<String> =
+    ResponseEntity(ex.message, HttpStatus.BAD_REQUEST)
+
+  @ExceptionHandler(InvalidProductQuantityException::class)
+  fun handleInvalidProductQuantity(ex: InvalidProductQuantityException): ResponseEntity<String> =
     ResponseEntity(ex.message, HttpStatus.BAD_REQUEST)
 }

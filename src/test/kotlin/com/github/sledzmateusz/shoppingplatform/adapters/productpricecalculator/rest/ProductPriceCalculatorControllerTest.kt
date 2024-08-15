@@ -2,7 +2,7 @@ package com.github.sledzmateusz.shoppingplatform.adapters.productpricecalculator
 
 import com.github.sledzmateusz.shoppingplatform.domain.shared.Money
 import com.github.sledzmateusz.shoppingplatform.testutils.IntegrationTest
-import com.github.sledzmateusz.shoppingplatform.testutils.Randomizer
+import com.github.sledzmateusz.shoppingplatform.testutils.Randomizer.invalidProductId
 import com.github.sledzmateusz.shoppingplatform.testutils.Randomizer.randomProductId
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -18,13 +18,23 @@ internal class ProductPriceCalculatorControllerTest @Autowired constructor(
 
   @Test
   fun `should return discounted product for any productId`() {
-    val randomProductId = randomProductId()
+    val expectedProductId = "aac7d817-93f0-4f6f-92c4-6752c95d23b0"
 
-    val response = testRestTemplate.postForEntity("/products/$randomProductId/calculate-price", CalculateProductPriceRequest(1), CalculateProductPriceResponse::class.java)
+    val response = testRestTemplate.postForEntity("/products/$expectedProductId/calculate-price", CalculateProductPriceRequest(1), ProductPriceResponse::class.java)
 
     assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
     assertThat(response.body).isNotNull()
-    assertThat(response.body?.totalPrice).isEqualTo(Money(BigDecimal.valueOf(500)))
-    assertThat(response.body?.appliedDiscounts).isEqualTo(listOf(DiscountResponse("16e24a73-b38e-4f82-be4e-da968d56c9a5")))
+    assertThat(response.body?.regularTotalPrice).isEqualTo(Money(BigDecimal.valueOf(599.99)))
+    assertThat(response.body?.discountedTotalPrice).isEqualTo(Money(BigDecimal.valueOf(589.99)))
+  }
+
+  @Test
+  fun `should return 400 for invalid product quantity`() {
+    val expectedProductId = "aac7d817-93f0-4f6f-92c4-6752c95d23b0"
+
+    val response = testRestTemplate.postForEntity("/products/$expectedProductId/calculate-price", CalculateProductPriceRequest(0), String::class.java)
+
+    assertThat(response.statusCode).isEqualTo(HttpStatus.BAD_REQUEST)
+    assertThat(response.body).isEqualTo("Quantity must be between 1 and 100")
   }
 }
