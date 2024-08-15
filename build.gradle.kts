@@ -36,3 +36,15 @@ kotlin {
 tasks.withType<Test> {
   useJUnitPlatform()
 }
+
+tasks.named<Jar>("jar") {
+  archiveBaseName.set("shopping-platform")
+  archiveVersion.set("")
+  archiveClassifier.set("")
+}
+
+tasks.jar {
+  manifest {
+    attributes["Main-Class"] = "com.github.sledzmateusz.shoppingplatform.ApplicationRunnerKt"
+  }
+}
