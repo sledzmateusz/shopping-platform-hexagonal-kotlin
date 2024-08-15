@@ -1,8 +1,12 @@
 package com.github.sledzmateusz.shoppingplatform.domain.shared
 
+import org.junit.jupiter.api.Assertions.assertDoesNotThrow
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.util.UUID
 
 class ProductIdTest {
 
@@ -13,6 +17,17 @@ class ProductIdTest {
     val productId = ProductId(validUUID)
 
     assertEquals(validUUID, productId.raw)
+  }
+
+  @Test
+  fun `should create ProductId with valid UUID when using new() method`() {
+    val productId = ProductId.new()
+
+    assertNotNull(productId)
+    assertNotNull(productId.raw)
+    assertDoesNotThrow {
+      UUID.fromString(productId.raw)
+    }
   }
 
   @Test
