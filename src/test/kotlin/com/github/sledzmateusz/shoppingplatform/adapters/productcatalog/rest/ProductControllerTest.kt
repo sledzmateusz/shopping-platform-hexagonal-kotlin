@@ -1,7 +1,6 @@
 package com.github.sledzmateusz.shoppingplatform.adapters.productcatalog.rest
 
 import com.github.sledzmateusz.shoppingplatform.testutils.IntegrationTest
-import com.github.sledzmateusz.shoppingplatform.testutils.Randomizer
 import com.github.sledzmateusz.shoppingplatform.testutils.Randomizer.invalidProductId
 import com.github.sledzmateusz.shoppingplatform.testutils.Randomizer.randomProductId
 import org.assertj.core.api.Assertions.assertThat
@@ -12,14 +11,14 @@ import org.springframework.http.HttpStatus
 
 @IntegrationTest
 internal class ProductControllerTest @Autowired constructor(
-  private val restClient: ProductCatalogRestClient,
+  private val productCatalogRestClient: ProductCatalogRestClient,
 ) {
 
   @Test
   fun `should return 404 when product does not exist`() {
     val nonExistingProductId = randomProductId()
 
-    val response = restClient.getNotExistingProduct(nonExistingProductId)
+    val response = productCatalogRestClient.getNotExistingProduct(nonExistingProductId)
 
     assertThat(response.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
     assertThat(response.body).isEqualTo("Product ProductId(raw=$nonExistingProductId) not found")
@@ -29,7 +28,7 @@ internal class ProductControllerTest @Autowired constructor(
   fun `should return 400 for invalid product id`() {
     val invalidProductId = invalidProductId()
 
-    val response = restClient.getNotExistingProduct(invalidProductId)
+    val response = productCatalogRestClient.getNotExistingProduct(invalidProductId)
 
     assertThat(response.statusCode).isEqualTo(HttpStatus.BAD_REQUEST)
     assertThat(response.body).isEqualTo("Invalid Product ID: $invalidProductId")
@@ -42,7 +41,7 @@ internal class ProductControllerTest @Autowired constructor(
       name = "Sony WH-1000XM4 Wireless Noise-Cancelling Headphones"
     )
 
-    val response = restClient.getProductBy(expectedProduct.id)
+    val response = productCatalogRestClient.getProductBy(expectedProduct.id)
 
     assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
     assertThat(response.body).isNotNull

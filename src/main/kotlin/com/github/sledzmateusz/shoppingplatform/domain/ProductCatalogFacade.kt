@@ -13,6 +13,6 @@ class ProductCatalogFacade(private val repository: ProductRepository) {
   }
 }
 
-data class ProductDto(val id: String, val name: String, val basePrice: Money)
+data class ProductDto(val id: ProductId, val name: String, val basePrice: Money)
 
-fun Product.toDto() = ProductDto(id = this.id.raw, name = this.name, basePrice = this.price)
+fun Product.toDto() = ProductDto(id = this.id, name = this.name, basePrice = this.price)

@@ -1,4 +1,4 @@
-package com.github.sledzmateusz.shoppingplatform.adapters.productcatalog.dummyDb
+package com.github.sledzmateusz.shoppingplatform.adapters.productcatalog.inmemorydb
 
 import com.github.sledzmateusz.shoppingplatform.adapters.productcatalog.rest.ProductNotFoundException
 import com.github.sledzmateusz.shoppingplatform.domain.productcatalog.Product

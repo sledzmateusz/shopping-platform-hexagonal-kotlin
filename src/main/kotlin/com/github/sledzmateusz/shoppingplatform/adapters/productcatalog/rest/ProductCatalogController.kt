@@ -25,6 +25,7 @@ class ProductController(private val facade: ProductCatalogFacade) {
 }
 
 data class ProductResponse(val id: String, val name: String)
-fun ProductDto.toResponse() = ProductResponse(id = this.id, name = this.name)
+
+private fun ProductDto.toResponse() = ProductResponse(id = this.id.raw, name = this.name)
 
 class ProductNotFoundException(productId: ProductId) : RuntimeException("Product $productId not found")
