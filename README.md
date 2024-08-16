@@ -10,6 +10,12 @@ A simple example of a shopping platform implemented in Kotlin with hexagonal arc
 * Hexagonal Architecture.
 * In-Memory Database: For simplicity, the service uses an in-memory database to store product information.
 
+### Architecture Overview
+
+The architecture of the project is illustrated in the following diagram:
+
+![Architecture Diagram](docs/architecture.svg)
+
 ### Assumptions
 * If multiple discounts are applicable to a product, the service will apply the discount that results in the lowest total price for the customer.
 * Percentage-based discounts are only applicable to specific products. There is a predefined list of product IDs for which each percentage-based discount can be applied. Products not on this list will not receive the percentage-based discount.
