@@ -5,9 +5,9 @@ import com.github.sledzmateusz.shoppingplatform.domain.productpricecalculator.Di
 import com.github.sledzmateusz.shoppingplatform.domain.productpricecalculator.Product.DiscountedProduct
 import com.github.sledzmateusz.shoppingplatform.domain.shared.Money
 
-class DiscountService {
+class DiscountApplier {
 
-  fun applyDiscount(regularProduct: Product.RegularProduct, discount: Discount): DiscountedProduct {
+  fun apply(regularProduct: Product.RegularProduct, discount: Discount): DiscountedProduct {
     when (discount) {
       is AmountBasedDiscount -> {
         val baseTotalPrice = regularProduct.getBaseTotalPrice()

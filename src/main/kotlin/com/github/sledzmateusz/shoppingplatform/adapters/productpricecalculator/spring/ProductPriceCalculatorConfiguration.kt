@@ -3,7 +3,7 @@ package com.github.sledzmateusz.shoppingplatform.adapters.productpricecalculator
 import com.github.sledzmateusz.shoppingplatform.domain.ProductPriceCalculatorFacade
 import com.github.sledzmateusz.shoppingplatform.domain.productpricecalculator.BestDiscountSelector
 import com.github.sledzmateusz.shoppingplatform.domain.productpricecalculator.DiscountEligibilityChecker
-import com.github.sledzmateusz.shoppingplatform.domain.productpricecalculator.DiscountService
+import com.github.sledzmateusz.shoppingplatform.domain.productpricecalculator.DiscountApplier
 import com.github.sledzmateusz.shoppingplatform.domain.productpricecalculator.DiscountsProvider
 import com.github.sledzmateusz.shoppingplatform.domain.productpricecalculator.ProductCatalogClient
 import com.github.sledzmateusz.shoppingplatform.domain.productpricecalculator.ProductPriceCalculator
@@ -14,8 +14,8 @@ import org.springframework.context.annotation.Configuration
 class ProductPriceCalculatorConfiguration {
 
   @Bean
-  fun discountService(): DiscountService {
-    return DiscountService()
+  fun discountApplier(): DiscountApplier {
+    return DiscountApplier()
   }
 
   @Bean
@@ -24,14 +24,14 @@ class ProductPriceCalculatorConfiguration {
   }
 
   @Bean
-  fun bestDiscountSelector(discountService: DiscountService): BestDiscountSelector {
-    return BestDiscountSelector(discountService)
+  fun bestDiscountSelector(discountApplier: DiscountApplier): BestDiscountSelector {
+    return BestDiscountSelector(discountApplier)
   }
 
   @Bean
   fun productPriceCalculator(
     productCatalogClient: ProductCatalogClient,
-    discountService: DiscountService,
+    discountApplier: DiscountApplier,
     bestDiscountSelector: BestDiscountSelector,
     discountEligibilityChecker: DiscountEligibilityChecker,
   ): ProductPriceCalculator {
